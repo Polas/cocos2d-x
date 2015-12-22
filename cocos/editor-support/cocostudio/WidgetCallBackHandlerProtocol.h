@@ -29,6 +29,26 @@
 #include "cocostudio/CocosStudioExport.h"
 #include "ui/UIWidget.h"
 
+#define CS_MEMBERVARIABLEASSIGNER_GLUE(TARGET, MEMBERVARIABLENAME, MEMBERVARIABLETYPE, MEMBERVARIABLE) \
+    if (target == TARGET && 0 == strcmp(memberVariableName, (MEMBERVARIABLENAME))) { \
+        MEMBERVARIABLETYPE pOldVar = MEMBERVARIABLE; \
+        MEMBERVARIABLE = dynamic_cast<MEMBERVARIABLETYPE>(node); \
+        CC_ASSERT(MEMBERVARIABLE); \
+        if (pOldVar != MEMBERVARIABLE) { \
+            CC_SAFE_RELEASE(pOldVar); \
+            MEMBERVARIABLE->retain(); \
+		} \
+        return true; \
+	}
+
+#define CS_SELECTORRESOLVER_TOUCH_GLUE(TARGET, SELECTORNAME, METHOD) if(TARGET && strcmp(callBackName.c_str(), SELECTORNAME) == 0) { \
+	return CC_CALLBACK_2(METHOD, TARGET); \
+}
+
+#define CS_SELECTORRESOLVER_CLICK_GLUE(TARGET, SELECTORNAME, METHOD) if(TARGET && strcmp(callBackName.c_str(), SELECTORNAME) == 0) { \
+	return CC_CALLBACK_1(METHOD, TARGET); \
+}
+
 namespace cocostudio {
     
     class CC_STUDIO_DLL WidgetCallBackHandlerProtocol
@@ -37,11 +57,13 @@ namespace cocostudio {
         WidgetCallBackHandlerProtocol() {};
         virtual ~WidgetCallBackHandlerProtocol() {};
         
-        virtual cocos2d::ui::Widget::ccWidgetTouchCallback onLocateTouchCallback(const std::string &callBackName){ return nullptr; };
+		virtual cocos2d::ui::Widget::ccWidgetTouchCallback onLocateTouchCallback(const std::string &callBackName){ return nullptr; };
         virtual cocos2d::ui::Widget::ccWidgetClickCallback onLocateClickCallback(const std::string &callBackName){ return nullptr; };
         virtual cocos2d::ui::Widget::ccWidgetEventCallback onLocateEventCallback(const std::string &callBackName){ return nullptr; };
-    };
+		virtual bool onAssignCSMemberVariable(cocos2d::Ref* target, const char* memberVariableName, cocos2d::Node* node){ return false; };
+		virtual void onNodeLoaded(){ };
 
+    };
 }
 
 #endif /* defined(__cocos2d_libs__WidgetCallBackHandlerProtocol__) */

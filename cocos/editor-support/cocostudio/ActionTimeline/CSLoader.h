@@ -173,6 +173,7 @@ protected:
     
     std::string _csBuildID;
     
+	CC_SYNTHESIZE(float, _resolutionScale, ResolutionScale);
 };
 
 NS_CC_END

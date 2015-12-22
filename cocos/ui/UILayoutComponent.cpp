@@ -26,7 +26,7 @@
 #include "2d/CCNode.h"
 #include "GUIDefine.h"
 #include "UIHelper.h"
-
+#include "cocostudio\ActionTimeline\CSLoader.h"
 NS_CC_BEGIN
 
 namespace ui {
@@ -561,6 +561,20 @@ namespace ui {
         const Point& ownerAnchor = _owner->getAnchorPoint();
         Size ownerSize = _owner->getContentSize();
         Point ownerPosition = _owner->getPosition();
+		float contentScale = CSLoader::getInstance()->getResolutionScale();
+
+		if (!_usingPositionPercentX){
+			ownerPosition.x *= contentScale;
+		}
+		if (!_usingPositionPercentY){
+			ownerPosition.y *= contentScale;
+		}
+		if (!_usingPercentHeight){
+			ownerSize.height *= contentScale;
+		}
+		if (!_usingPercentWidth){
+			ownerSize.width *= contentScale;
+		}
 
         switch (this->_horizontalEdge)
         {
