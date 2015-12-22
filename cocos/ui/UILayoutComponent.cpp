@@ -26,7 +26,7 @@
 #include "2d/CCNode.h"
 #include "GUIDefine.h"
 #include "UIHelper.h"
-#include "cocostudio\ActionTimeline\CSLoader.h"
+#include "cocostudio/ActionTimeline/CSLoader.h"
 NS_CC_BEGIN
 
 namespace ui {
