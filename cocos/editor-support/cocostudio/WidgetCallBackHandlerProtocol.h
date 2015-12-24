@@ -36,7 +36,6 @@
         CC_ASSERT(MEMBERVARIABLE); \
         if (pOldVar != MEMBERVARIABLE) { \
             CC_SAFE_RELEASE(pOldVar); \
-            MEMBERVARIABLE->retain(); \
 		} \
         return true; \
 	}
