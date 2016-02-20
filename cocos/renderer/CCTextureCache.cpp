@@ -418,6 +418,20 @@ Texture2D* TextureCache::addImage(Image *image, const std::string &key)
     
     return texture;
 }
+void TextureCache::addTexture(Texture2D* texture, const std::string & key){
+	auto it = _textures.find(key);
+	if (it != _textures.end()) {
+		CCLOGERROR("error: [TextureCache] textureForKey:%s already exist", key.c_str());
+	}
+	if (texture != nullptr){
+		_textures.insert(std::make_pair(key, texture));
+		texture->retain();
+		texture->autorelease();
+	}
+	else{
+		CCLOGERROR("error: [TextureCache] textureForKey:%s is null", key.c_str());
+	}
+}
 
 bool TextureCache::reloadTexture(const std::string& fileName)
 {
