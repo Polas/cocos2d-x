@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include "base/CCRef.h"
 #include <vector>
 #include <functional>
+#include <iterator>
 #include <algorithm> // for std::find
 
 /**
