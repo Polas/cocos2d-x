@@ -588,13 +588,20 @@ void Widget::setTouchEnabled(bool enable)
         _touchListener->onTouchMoved = CC_CALLBACK_2(Widget::onTouchMoved, this);
         _touchListener->onTouchEnded = CC_CALLBACK_2(Widget::onTouchEnded, this);
         _touchListener->onTouchCancelled = CC_CALLBACK_2(Widget::onTouchCancelled, this);
-        _eventDispatcher->addEventListenerWithSceneGraphPriority(_touchListener, this);
+        _eventDispatcher->addEventListenerWithFixedPriority(_touchListener, INT_MAX - 1);
     }
     else
     {
         _eventDispatcher->removeEventListener(_touchListener);
         CC_SAFE_RELEASE_NULL(_touchListener);
     }
+}
+
+void Widget::setTouchPriority(int priority){
+	if (_touchListener){
+		_eventDispatcher->removeEventListener(_touchListener);
+		_eventDispatcher->addEventListenerWithFixedPriority(_touchListener, priority);
+	}
 }
 
 bool Widget::isTouchEnabled() const
@@ -942,9 +949,13 @@ void Widget::addCCSEventListener(const ccWidgetEventCallback &callback)
 
 bool Widget::hitTest(const Vec2 &pt, const Camera* camera, Vec3 *p) const
 {
-    Rect rect;
-    rect.size = getContentSize();
-    return isScreenPointInRect(pt, camera, getWorldToNodeTransform(), rect, p);
+	Vec2 touchLocation = pt; // Get the touch position
+	touchLocation = this->getParent()->convertToNodeSpace(touchLocation);
+	Rect bBox = getBoundingBox();
+	return bBox.containsPoint(touchLocation);
+    //Rect rect;
+    //rect.size = getContentSize();
+    //return isScreenPointInRect(pt, camera, getWorldToNodeTransform(), rect, p);
 }
 
 bool Widget::isClippingParentContainsPoint(const Vec2 &pt)
@@ -990,6 +1001,7 @@ bool Widget::isClippingParentContainsPoint(const Vec2 &pt)
     }
     return true;
 }
+
 
 void Widget::interceptTouchEvent(cocos2d::ui::Widget::TouchEventType event, cocos2d::ui::Widget *sender, Touch *touch)
 {

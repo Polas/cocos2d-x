@@ -206,6 +206,7 @@ public:
      */
     bool isBright() const;
 
+	void setTouchPriority(int priority);
     /**
      * Sets whether the widget is touch enabled.
      *
