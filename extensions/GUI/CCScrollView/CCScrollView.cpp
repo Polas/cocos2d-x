@@ -70,7 +70,7 @@ ScrollView::ScrollView()
 
 ScrollView::~ScrollView()
 {
-
+	_eventDispatcher->removeEventListener(_touchListener);
 }
 
 ScrollView* ScrollView::create(Size size, Node* container/* = nullptr*/)
@@ -189,12 +189,12 @@ void ScrollView::setTouchEnabled(bool enabled)
     if (enabled)
     {
         _touchListener = EventListenerTouchOneByOne::create();
+		_touchListener->setSwallowTouches(true);
         _touchListener->onTouchBegan = CC_CALLBACK_2(ScrollView::onTouchBegan, this);
         _touchListener->onTouchMoved = CC_CALLBACK_2(ScrollView::onTouchMoved, this);
         _touchListener->onTouchEnded = CC_CALLBACK_2(ScrollView::onTouchEnded, this);
         _touchListener->onTouchCancelled = CC_CALLBACK_2(ScrollView::onTouchCancelled, this);
-        
-        _eventDispatcher->addEventListenerWithSceneGraphPriority(_touchListener, this);
+        _eventDispatcher->addEventListenerWithFixedPriority(_touchListener, INT_MAX - 1);
     }
     else
     {
@@ -202,6 +202,12 @@ void ScrollView::setTouchEnabled(bool enabled)
         _touchMoved = false;
         _touches.clear();
     }
+}
+void ScrollView::setTouchPriority(int touchPriority){
+	if (_touchListener != nullptr){
+		_eventDispatcher->removeEventListener(_touchListener);
+		_eventDispatcher->addEventListenerWithFixedPriority(_touchListener, touchPriority);
+	}
 }
 
 void ScrollView::setContentOffset(Vec2 offset, bool animated/* = false*/)

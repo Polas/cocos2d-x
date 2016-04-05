@@ -191,6 +191,7 @@ public:
     void resume(Ref* sender);
 
     void setTouchEnabled(bool enabled);
+	void setTouchPriority(int touchPriority);
 	bool isTouchEnabled() const;
     bool isDragging() const {return _dragging;}
     bool isTouchMoved() const { return _touchMoved; }
