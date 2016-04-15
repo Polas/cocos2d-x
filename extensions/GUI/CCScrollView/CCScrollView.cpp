@@ -204,6 +204,7 @@ void ScrollView::setTouchEnabled(bool enabled)
     }
 }
 void ScrollView::setTouchPriority(int touchPriority){
+	setTouchEnabled(true);
 	if (_touchListener != nullptr){
 		_eventDispatcher->removeEventListener(_touchListener);
 		_eventDispatcher->addEventListenerWithFixedPriority(_touchListener, touchPriority);
